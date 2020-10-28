@@ -1,0 +1,103 @@
+{
+    "modulesContent": {
+        "$edgeAgent": {
+            "properties.desired": {
+                "modules": {
+                    "AzureSQLEdge": {
+                        "settings": {
+                            "image": "mcr.microsoft.com/azure-sql-edge/developer",
+                            "createOptions": "{\"HostConfig\":{\"CapAdd\":[\"SYS_PTRACE\"],\"Binds\":[\"sqlvolume:/sqlvolume\"],\"PortBindings\":{\"1433/tcp\":[{\"HostPort\":\"1433\"}]},\"Mounts\":[{\"Type\":\"volume\",\"Source\":\"sqlvolume\",\"Target\":\"/var/opt/mssql\"}]},\"Env\":[\"MSSQL_AGENT_ENABLED=TRUE\",\"ClientTransportType=AMQP_TCP_Only\",\"PlanId=asde-developer-on-iot-edge\"]}"
+                        },
+                        "type": "docker",
+                        "version": "1.0",
+                        "env": {
+                            "ACCEPT_EULA": {
+                                "value": "Y"
+                            },
+                            "MSSQL_SA_PASSWORD": {
+                                "value": "<Default_MSSQL_SA_Password>"
+                            },
+                            "MSSQL_LCID": {
+                                "value": "1033"
+                            },
+                            "MSSQL_COLLATION": {
+                                "value": "SQL_Latin1_General_CP1_CI_AS"
+                            }
+                        },
+                        "status": "running",
+                        "restartPolicy": "always"
+                    },
+                    "SimTempSensor": {
+                        "settings": {
+                            "image": "mcr.microsoft.com/azureiotedge-simulated-temperature-sensor:1.0",
+                            "createOptions": ""
+                        },
+                        "type": "docker",
+                        "version": "1.0",
+                        "status": "running",
+                        "restartPolicy": "always"
+                    },
+                    "grafana": {
+                        "settings": {
+                            "image": "grafana/grafana",
+                            "createOptions": "{\"HostConfig\":{\"Binds\":[\"grafanavolume:/grafanavolume\"],\"PortBindings\":{\"3000/tcp\":[{\"HostPort\":\"3000\"}]},\"Mounts\":[{\"Type\":\"volume\",\"Source\":\"grafanavolume\",\"Target\":\"/var/lib/grafana\"}]}}"
+                        },
+                        "type": "docker",
+                        "version": "1.0",
+                        "status": "running",
+                        "restartPolicy": "always"
+                    }
+                },
+                "runtime": {
+                    "settings": {
+                        "minDockerVersion": "v1.25"
+                    },
+                    "type": "docker"
+                },
+                "schemaVersion": "1.0",
+                "systemModules": {
+                    "edgeAgent": {
+                        "settings": {
+                            "image": "mcr.microsoft.com/azureiotedge-agent:1.0",
+                            "createOptions": ""
+                        },
+                        "type": "docker"
+                    },
+                    "edgeHub": {
+                        "settings": {
+                            "image": "mcr.microsoft.com/azureiotedge-hub:1.0",
+                            "createOptions": "{\"HostConfig\":{\"PortBindings\":{\"443/tcp\":[{\"HostPort\":\"443\"}],\"5671/tcp\":[{\"HostPort\":\"5671\"}],\"8883/tcp\":[{\"HostPort\":\"8883\"}]}}}"
+                        },
+                        "type": "docker",
+                        "status": "running",
+                        "restartPolicy": "always"
+                    }
+                }
+            }
+        },
+        "$edgeHub": {
+            "properties.desired": {
+                "routes": {
+                    "SimulatedTemperatureSensorToAzureSQLEdge": "FROM /messages/modules/SimTempSensor/* INTO BrokeredEndpoint(\"/modules/AzureSQLEdge/inputs/simtempsensor\")",
+                    "AzureSQLEdgeToIotHub": "FROM /messages/modules/AzureSQLEdge/streamoutput INTO $upstream"
+                },
+                "schemaVersion": "1.0",
+                "storeAndForwardConfiguration": {
+                    "timeToLiveSecs": 7200
+                }
+            }
+        },
+        "AzureSQLEdge": {
+            "properties.desired": {}
+        },
+        "SimTempSensor": {
+            "properties.desired": {
+                "SendData": true,
+                "SendInterval": 5
+            }
+        },
+        "grafana": {
+            "properties.desired": {}
+        }
+    }
+}
