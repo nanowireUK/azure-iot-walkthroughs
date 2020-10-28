@@ -78,7 +78,7 @@
         "$edgeHub": {
             "properties.desired": {
                 "routes": {
-                    "SimulatedTemperatureSensorToAzureSQLEdge": "FROM /messages/modules/SimTempSensor/* INTO BrokeredEndpoint(\"/modules/AzureSQLEdge/inputs/simtempsensor\")",
+                    "SimulatedTemperatureSensorToAzureSQLEdge": "FROM /messages/modules/SimTempSensor/* INTO BrokeredEndpoint(\"/modules/AzureSQLEdge/inputs/TempSensorStream\")",
                     "AzureSQLEdgeToIotHub": "FROM /messages/modules/AzureSQLEdge/streamoutput INTO $upstream"
                 },
                 "schemaVersion": "1.0",

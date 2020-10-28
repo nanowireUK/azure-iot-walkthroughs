@@ -107,7 +107,7 @@ This section is based on the documentation found [here](https://docs.microsoft.c
     (
         [Id] INT NOT NULL IDENTITY PRIMARY KEY, -- Primary Key column
         [timeCreated] DATETIME NOT NULL,
-        [MachineTemp] FLOAT NOT NULL,
+        [MachineTemperature] FLOAT NOT NULL,
         [MachinePressure] FLOAT NOT NULL,
         [AmbientTemperature] FLOAT NOT NULL,
         [AmbientHumidity] FLOAT NOT NULL
@@ -177,7 +177,7 @@ This section is based on the documentation found [here](https://docs.microsoft.c
 
 ## Configuring Grafana
 
-* Go to [<edgehost>:3000](http://localhost:3000)
+* Go to [edgehost:3000](http://localhost:3000)
 * Login with admin:admin and supply a new password when prompted
 * Add a new 'Microsoft SQL Server' data source 
     * Host: `AzureSQLEdge:1433`
