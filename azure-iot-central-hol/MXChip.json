@@ -1,0 +1,233 @@
+[
+  {
+    "@id": "dtmi:mxchiptesting:MXChipFull6a1;7",
+    "@type": "Interface",
+    "contents": [
+      {
+        "@id": "dtmi:mxchiptesting:MXChipFull6a1:humidity;1",
+        "@type": [
+          "Telemetry",
+          "Humidity"
+        ],
+        "displayName": {
+          "en": "Humidity"
+        },
+        "name": "humidity",
+        "schema": "double",
+        "unit": "percent"
+      },
+      {
+        "@id": "dtmi:mxchiptesting:MXChipFull6a1:pressure;1",
+        "@type": [
+          "Telemetry",
+          "Pressure"
+        ],
+        "displayName": {
+          "en": "Pressure"
+        },
+        "name": "pressure",
+        "schema": "double",
+        "unit": "poundPerSquareInch"
+      },
+      {
+        "@id": "dtmi:mxchiptesting:MXChipFull6a1:temperature;1",
+        "@type": [
+          "Telemetry",
+          "Temperature"
+        ],
+        "displayName": {
+          "en": "Temperature"
+        },
+        "name": "temp",
+        "schema": "double",
+        "unit": "degreeCelsius"
+      },
+      {
+        "@id": "dtmi:mxchiptesting:MXChipFull6a1:magnetometerX;1",
+        "@type": "Telemetry",
+        "displayName": {
+          "en": "Magnetometer X"
+        },
+        "name": "magnetometerX",
+        "schema": "long"
+      },
+      {
+        "@id": "dtmi:mxchiptesting:MXChipFull6a1:magnetometerY;1",
+        "@type": "Telemetry",
+        "displayName": {
+          "en": "Magnetometer Y"
+        },
+        "name": "magnetometerY",
+        "schema": "long"
+      },
+      {
+        "@id": "dtmi:mxchiptesting:MXChipFull6a1:magnetometerZ;1",
+        "@type": "Telemetry",
+        "displayName": {
+          "en": "Magnetometer Z"
+        },
+        "name": "magnetometerZ",
+        "schema": "long"
+      },
+      {
+        "@id": "dtmi:mxchiptesting:MXChipFull6a1:accelerometerX;1",
+        "@type": "Telemetry",
+        "displayName": {
+          "en": "Accelerometer X"
+        },
+        "name": "accelerometerX",
+        "schema": "long"
+      },
+      {
+        "@id": "dtmi:mxchiptesting:MXChipFull6a1:accelerometerY;1",
+        "@type": "Telemetry",
+        "displayName": {
+          "en": "Accelerometer Y"
+        },
+        "name": "accelerometerY",
+        "schema": "long"
+      },
+      {
+        "@id": "dtmi:mxchiptesting:MXChipFull6a1:accelerometerZ;1",
+        "@type": "Telemetry",
+        "displayName": {
+          "en": "Accelerometer Z"
+        },
+        "name": "accelerometerZ",
+        "schema": "long"
+      },
+      {
+        "@id": "dtmi:mxchiptesting:MXChipFull6a1:gyroscopeX;1",
+        "@type": "Telemetry",
+        "displayName": {
+          "en": "Gyroscope X"
+        },
+        "name": "gyroscopeX",
+        "schema": "long"
+      },
+      {
+        "@id": "dtmi:mxchiptesting:MXChipFull6a1:gyroscopeY;1",
+        "@type": "Telemetry",
+        "displayName": {
+          "en": "Gyroscope Y"
+        },
+        "name": "gyroscopeY",
+        "schema": "long"
+      },
+      {
+        "@id": "dtmi:mxchiptesting:MXChipFull6a1:gyroscopeZ;1",
+        "@type": "Telemetry",
+        "displayName": {
+          "en": "Gyroscope Z"
+        },
+        "name": "gyroscopeZ",
+        "schema": "long"
+      },
+      {
+        "@id": "dtmi:mxchiptesting:MXChipFull6a1:deviceState;1",
+        "@type": [
+          "Telemetry",
+          "State"
+        ],
+        "displayName": {
+          "en": "Device State"
+        },
+        "name": "deviceState",
+        "schema": {
+          "@id": "dtmi:mxchiptesting:MXChipFull6a1:deviceState:schema;1",
+          "@type": "Enum",
+          "enumValues": [
+            {
+              "@id": "dtmi:mxchiptesting:MXChipFull6a1:deviceState:schema:Normal;1",
+              "enumValue": "NORMAL",
+              "name": "Normal"
+            },
+            {
+              "@id": "dtmi:mxchiptesting:MXChipFull6a1:deviceState:schema:Caution;1",
+              "enumValue": "CAUTION",
+              "name": "Caution"
+            },
+            {
+              "@id": "dtmi:mxchiptesting:MXChipFull6a1:deviceState:schema:Danger;1",
+              "enumValue": "DANGER",
+              "name": "Danger"
+            }
+          ],
+          "valueSchema": "string"
+        }
+      },
+      {
+        "@id": "dtmi:mxchiptesting:MXChipFull6a1:location;2",
+        "@type": [
+          "Property",
+          "Location"
+        ],
+        "displayName": {
+          "en": "Location"
+        },
+        "name": "location",
+        "schema": "geopoint",
+        "writable": false
+      },
+      {
+        "@id": "dtmi:mxchiptesting:MXChipFull6a1:ButtonBPressed;3",
+        "@type": [
+          "Telemetry",
+          "Event"
+        ],
+        "displayName": {
+          "en": "Button B Pressed"
+        },
+        "name": "ButtonBPressed",
+        "schema": "string"
+      },
+      {
+        "@id": "dtmi:mxchiptesting:MXChipFull6a1:dieNumber;4",
+        "@type": "Property",
+        "displayName": {
+          "en": "Die Number"
+        },
+        "name": "dieNumber",
+        "schema": "long",
+        "writable": false
+      },
+      {
+        "@id": "dtmi:mxchiptesting:MXChipFull6a1:activateIR;4",
+        "@type": "Property",
+        "displayName": {
+          "en": "Activate IR"
+        },
+        "name": "activateIR",
+        "schema": "integer",
+        "writable": true
+      },
+      {
+        "@id": "dtmi:mxchiptesting:MXChipFull6a1:setCurrent;4",
+        "@type": "Property",
+        "displayName": {
+          "en": "Set Current"
+        },
+        "name": "setCurrent",
+        "schema": "integer",
+        "writable": true
+      },
+      {
+        "@id": "dtmi:mxchiptesting:MXChipFull6a1:setVoltage;4",
+        "@type": "Property",
+        "displayName": {
+          "en": "Set Voltage"
+        },
+        "name": "setVoltage",
+        "schema": "integer",
+        "writable": true
+      }
+    ],
+    "displayName": {
+      "en": "MXChip Full"
+    },
+    "@context": [
+      "dtmi:iotcentral:context;2",
+      "dtmi:dtdl:context;2"
+    ]
+  }
+]
