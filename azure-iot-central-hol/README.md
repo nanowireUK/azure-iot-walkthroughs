@@ -1,5 +1,7 @@
 # Azure IoT Central HoL
 
+[Download MX Chip Model](https://raw.githubusercontent.com/nanowireUK/azure-iot-walkthroughs/main/azure-iot-central-hol/MXChip.json)
+
 ## Topics
 
 * Setup a new IoT Central instance
