@@ -220,6 +220,74 @@
         "name": "setVoltage",
         "schema": "integer",
         "writable": true
+      },
+      {
+        "@id": "dtmi:mxchiptesting:MXChipFull6a1:echo;7",
+        "@type": "Command",
+        "commandType": "synchronous",
+        "displayName": {
+          "en": "Echo"
+        },
+        "name": "echo",
+        "request": {
+          "@id": "dtmi:mxchiptesting:MXChipFull6a1:echo:request:data;7",
+          "@type": "CommandPayload",
+          "displayName": {
+            "en": "Data"
+          },
+          "name": "data",
+          "schema": {
+            "@id": "dtmi:mxchiptesting:MXChipFull6a1:echo:request:data:schema;7",
+            "@type": "Object",
+            "displayName": {
+              "en": "Object"
+            },
+            "fields": [
+              {
+                "@id": "dtmi:mxchiptesting:MXChipFull6a1:echo:request:data:schema:displayedValue;7",
+                "displayName": {
+                  "en": "Displayed Value"
+                },
+                "name": "displayedValue",
+                "schema": "string"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "@id": "dtmi:mxchiptesting:MXChipFull6a1:countdown;7",
+        "@type": "Command",
+        "commandType": "synchronous",
+        "displayName": {
+          "en": "Countdown"
+        },
+        "name": "countdown",
+        "request": {
+          "@id": "dtmi:mxchiptesting:MXChipFull6a1:countdown:request:data;7",
+          "@type": "CommandPayload",
+          "displayName": {
+            "en": "Data"
+          },
+          "name": "data",
+          "schema": {
+            "@id": "dtmi:mxchiptesting:MXChipFull6a1:countdown:request:data:schema;7",
+            "@type": "Object",
+            "displayName": {
+              "en": "Object"
+            },
+            "fields": [
+              {
+                "@id": "dtmi:mxchiptesting:MXChipFull6a1:countdown:request:data:schema:countFrom;7",
+                "displayName": {
+                  "en": "Count From"
+                },
+                "name": "countFrom",
+                "schema": "integer"
+              }
+            ]
+          }
+        }
       }
     ],
     "displayName": {
