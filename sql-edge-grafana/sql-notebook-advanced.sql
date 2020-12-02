@@ -37,6 +37,9 @@ WITH
 );
 GO
 
+exec sys.sp_stop_streaming_job @name=N'TempSensorStreamJob'
+exec sys.sp_drop_streaming_job @name=N'TempSensorStreamJob'
+
 EXEC sys.sp_create_streaming_job @name=N'TempSensorStreamJob',@statement= N'
 WITH AvgQuery AS (
 SELECT 
@@ -66,8 +69,6 @@ SELECT * INTO TempCompressedTableStream
 FROM AvgQuery
 '
 
-exec sys.sp_stop_streaming_job @name=N'TempSensorStreamJob'
-exec sys.sp_drop_streaming_job @name=N'TempSensorStreamJob'
 exec sys.sp_start_streaming_job @name=N'TempSensorStreamJob'
 
 SELECT TOP (1000) *

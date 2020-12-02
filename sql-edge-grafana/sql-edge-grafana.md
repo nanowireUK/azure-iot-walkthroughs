@@ -230,7 +230,9 @@ Going through the next steps extends our solution to create an aggregated data s
 
 * Create the new table to hold our average value
     ```sql
-    -- First create 
+    USE SQLEdgeTest
+    go
+    -- First create the table we will use to hold the average values
     IF OBJECT_ID('[dbo].[TempCompressedTable]', 'U') IS NOT NULL
     DROP TABLE [dbo].[TempCompressedTable]
     GO
