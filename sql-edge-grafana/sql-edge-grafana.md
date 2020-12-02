@@ -1,10 +1,15 @@
 # Azure IoT Edge Solution with Azure SQL Edge and Grafana
 
+The Azure IoT Edge framework allows us to deploy and manage 
+
 **Prerequisites**
 
-* An Azure IoT Hub (minimum F1 or S1)
-* A running IoT Edge instance connected to the IoT Hub
-* Azure Data Studio installed
+There are a number of pre-requisites that are not specific to the task of setting up Azure SQL Edge and Grafana on IoT Edge and so they won't be covered in detail.
+
+* [An Azure IoT Hub (minimum F1 or S1)](https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-create-through-portal)
+* [A running IoT Edge instance connected to the IoT Hub](https://docs.microsoft.com/en-us/azure/iot-edge/quickstart-linux?view=iotedge-2018-06)
+* [Azure CLI and Azure IOT extension](https://github.com/azure/azure-iot-cli-extension#installation) installed or Visual Studio Code and the Azure IoT Tools exntesion
+* [Azure Data Studio](https://docs.microsoft.com/en-us/sql/azure-data-studio/download-azure-data-studio?view=sql-server-ver15) installed
 
 ## Deploying the necessary modules
 
@@ -18,7 +23,11 @@ The high level architecture of what we are building is as follows:
 
 [todo]
 
-The [deployment manifest](./deployment.manifest.json) can be deployed directly to the IoT Edge device using the `az iot` CLI or via Visual Studio Code and the IoT Edge extension. 
+The [deployment manifest](./deployment.manifest.json) can be deployed directly to the IoT Edge device using the `az iot` CLI or via Visual Studio Code and the IoT Edge extension.
+
+`az iot edge set-modules -k deployment.manifest.json -d <Target Device ID> -n <IoT Hub Name> --subscription <Subscription Name or ID>`
+
+You can optionally modifify the manifest to specify your own SQL password which is highly recommended.
 
 ## The Simulated Temperature Sensor
 
@@ -45,14 +54,24 @@ The attributes exhibit the following characteristics:
 
 The source code for the module can be found [here](https://github.com/Azure/iotedge/tree/master/edge-modules/SimulatedTemperatureSensor)
 
-> By default the module will send every 5 seconds and stop sending after 500 messages. You can reset this using `sudo iotedge restart SimTempSensor`.
+> By default the module will send every 5 seconds and stop sending after 500 messages. You can reset this by running `sudo iotedge restart SimTempSensor` directly on the IoT Edge device.
 
 ## Configuring Azure SQL Edge
 
 This section is based on the documentation found [here](https://docs.microsoft.com/en-us/azure/azure-sql-edge/create-stream-analytics-job) and extended for the use case. The raw commands can be found [here](sql-notebook.sql)
 
-* Use Azure Data Studio to connect to your Azure SQL Edge instance. The username is `sa` and the password `<Default_MSSQL_SA_Password>` unless this was changed in the manifest. The server address is `<edgehostname>:1433`
+* Use Azure Data Studio to connect to your Azure SQL Edge instance.
+    * Select `New Connection`
+    * Connection type: "Microsoft SQL Server"
+    * The server address is `<edgehostname or ip address>:1433`
+    * Authentication Type is `SQL Login`
+    * The username is `sa` and the password `<Default_MSSQL_SA_Password>` unless this was changed in the manifest. 
 * Create a new database to host our set up
+    * In the Home screen click on `New Query`
+    * Paste in the following T-SQL DDL statement and run it. 
+
+    > All subsequent statements should be run in the same way. Just be careful not to re-run old statements again.
+
     ```sql
     USE master
     GO
@@ -99,6 +118,8 @@ This section is based on the documentation found [here](https://docs.microsoft.c
 
 * Create the table that will host our data
     ```sql
+    USE SQLEdgeTest
+    go
     IF OBJECT_ID('[dbo].[TempSensorTable]', 'U') IS NOT NULL
     DROP TABLE [dbo].[TempSensorTable]
     GO
@@ -122,6 +143,7 @@ This section is based on the documentation found [here](https://docs.microsoft.c
     CREATE MASTER KEY ENCRYPTION BY PASSWORD = 'sdflkijsd%%#@#$ddff789897ono3nd';
 
     CREATE DATABASE SCOPED CREDENTIAL SQLCredential
+    -- change password to whatever was in the deployment manifest if you changed it
     WITH IDENTITY = 'sa', SECRET = '<Default_MSSQL_SA_Password>'
     go
     ```
@@ -186,7 +208,8 @@ This section is based on the documentation found [here](https://docs.microsoft.c
     * Password: `<Default_MSSQL_SA_Password>`
     * Encrypt: `false`
 * You can now use Grafana as you would with any other SQL Server source 🎉
-* Sample query could be
+* Click on the `Explore` menu on the left side
+* Paste in the following query and run it
     ```sql
     SELECT
     $__timeEpoch(timeCreated),
@@ -199,3 +222,4 @@ This section is based on the documentation found [here](https://docs.microsoft.c
     ORDER BY
     timeCreated ASC
     ```
+![Grafana Result](grafana-screenshot.png)
