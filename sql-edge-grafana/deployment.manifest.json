@@ -37,7 +37,7 @@
                         "status": "running",
                         "restartPolicy": "always"
                     },
-                    "grafana": {
+                    "Grafana": {
                         "settings": {
                             "image": "grafana/grafana",
                             "createOptions": "{\"HostConfig\":{\"Binds\":[\"grafanavolume:/grafanavolume\"],\"PortBindings\":{\"3000/tcp\":[{\"HostPort\":\"3000\"}]},\"Mounts\":[{\"Type\":\"volume\",\"Source\":\"grafanavolume\",\"Target\":\"/var/lib/grafana\"}]}}"
@@ -96,7 +96,7 @@
                 "SendInterval": 5
             }
         },
-        "grafana": {
+        "Grafana": {
             "properties.desired": {}
         }
     }
