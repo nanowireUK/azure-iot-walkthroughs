@@ -223,3 +223,100 @@ This section is based on the documentation found [here](https://docs.microsoft.c
     timeCreated ASC
     ```
 ![Grafana Result](grafana-screenshot.png)
+
+## Bonus SQL Edge Streaming Example
+
+Going through the next steps extends our solution to create an aggregated data stream that average all values over a minute. The results from this query are pushed up to IoT Hub and stored in a new table for this purpose.
+
+* Create the new table to hold our average value
+    ```sql
+    -- First create 
+    IF OBJECT_ID('[dbo].[TempCompressedTable]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[TempCompressedTable]
+    GO
+    -- Create the table in the specified schema
+    CREATE TABLE [dbo].[TempCompressedTable]
+    (
+        [Id] INT NOT NULL IDENTITY PRIMARY KEY,
+        [SensorId] NVARCHAR(255) NOT NULL, -- Primary Key column
+        [TimeStart] DATETIME NOT NULL,
+        [TimeEnd] DATETIME NOT NULL,
+        [AvgMachineTemperature] FLOAT NOT NULL,
+        [AvgMachinePressure] FLOAT NOT NULL,
+        [AvgAmbientTemperature] FLOAT NOT NULL,
+        [AvgAmbientHumidity] FLOAT NOT NULL
+        -- Specify more columns here
+    );
+    GO
+    ```
+
+* Create the two output streams, one towards the EdgeHub and the other into the new table
+    ```sql
+    CREATE EXTERNAL STREAM StreamOutput 
+    WITH 
+    (
+        DATA_SOURCE = EdgeHubInput,
+        FILE_FORMAT = InputFileFormat,
+        LOCATION = N'streamoutput',
+        INPUT_OPTIONS = N'',
+        OUTPUT_OPTIONS = N''
+    );
+    GO
+
+    CREATE EXTERNAL STREAM TempCompressedTableStream
+    WITH 
+    (
+        DATA_SOURCE = LocalSQLOutput,
+        LOCATION = N'SQLEdgeTest.dbo.TempCompressedTable',
+        INPUT_OPTIONS = N'',
+        OUTPUT_OPTIONS = N''
+    );
+    GO
+    ```
+
+* This steps stops, drops, recreates and starts the streaming job with our new query that includes the original query as so this functionality continues as well.
+
+    > There is a limit of single streaming job in SQL Edge but you can include multiple distinct queries within the job
+
+    ```sql
+    exec sys.sp_stop_streaming_job @name=N'TempSensorStreamJob'
+    exec sys.sp_drop_streaming_job @name=N'TempSensorStreamJob'
+
+    EXEC sys.sp_create_streaming_job @name=N'TempSensorStreamJob',@statement= N'
+    WITH AvgQuery AS (
+    SELECT 
+        MIN(timeCreated) as TimeStart,
+        MAX(timeCreated) as TimeEnd,
+        ''Test'' AS SensorId, 
+        AVG(machine.temperature) AS AvgMachineTemperature,
+        AVG(machine.pressure)    AS AvgMachinePressure,
+        AVG(ambient.temperature) AS AvgAmbientTemperature,
+        AVG(ambient.humidity)    AS AvgAmbientHumidity
+    FROM TempSensorStream TIMESTAMP BY timeCreated
+    GROUP BY SensorId, TumblingWindow(minute, 1) )
+
+    SELECT 
+        timeCreated, 
+        machine.temperature AS MachineTemperature,
+        machine.pressure    AS MachinePressure,
+        ambient.temperature AS AmbientTemperature,
+        ambient.humidity    AS AmbientHumidity
+    INTO TempSensorTableStream
+    FROM TempSensorStream  TIMESTAMP BY timeCreated
+
+    SELECT * INTO StreamOutput
+    FROM AvgQuery
+
+    SELECT * INTO TempCompressedTableStream
+    FROM AvgQuery
+    '
+
+    exec sys.sp_start_streaming_job @name=N'TempSensorStreamJob'
+    ```
+
+* Check the results. It will take a minute to populate since we are averaging the values.
+    ```sql
+    SELECT TOP (1000) *
+    FROM [SQLEdgeTest].[dbo].[TempCompressedTable]
+    ORDER BY timeStart DESC
+    ```
