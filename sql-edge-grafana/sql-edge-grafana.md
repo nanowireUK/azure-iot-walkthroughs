@@ -1,10 +1,10 @@
 # Azure IoT Edge Solution with Azure SQL Edge and Grafana
 
-The Azure IoT Edge framework allows us to deploy and manage 
+The Azure IoT Edge framework allows us to deploy and manage both official Microsoft containers as well as those from third parties or even our own custom code. In this walkthrough we will go through the steps for deploying the new Azure SQL Edge module, filling it with data from a simulated temperature sensor and finally visualising it in Grafana.
 
 **Prerequisites**
 
-There are a number of pre-requisites that are not specific to the task of setting up Azure SQL Edge and Grafana on IoT Edge and so they won't be covered in detail.
+There are a number of pre-requisites that are not specific to the task of setting up Azure SQL Edge and Grafana on IoT Edge and so they won't be covered in detail but instead are well documented behind the links.
 
 * [An Azure IoT Hub (minimum F1 or S1)](https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-create-through-portal)
 * [A running IoT Edge instance connected to the IoT Hub](https://docs.microsoft.com/en-us/azure/iot-edge/quickstart-linux?view=iotedge-2018-06)
@@ -21,7 +21,7 @@ Once we have our prequisites set up, the first thing we need to do is deploy the
 
 The high level architecture of what we are building is as follows:
 
-[todo]
+![high level architecture](./sql-edge-grafana-architecture.png)
 
 The [deployment manifest](./deployment.manifest.json) can be deployed directly to the IoT Edge device using the `az iot` CLI or via Visual Studio Code and the IoT Edge extension.
 
