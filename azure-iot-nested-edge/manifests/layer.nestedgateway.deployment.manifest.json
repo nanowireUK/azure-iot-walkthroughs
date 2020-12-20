@@ -1,0 +1,30 @@
+{
+    "modulesContent": {
+        "$edgeAgent": {
+            "properties.desired.modules.IoTEdgeAPIProxy": {
+                "settings": {
+                    "image": "$upstream:443/azureiotedge-api-proxy",
+                    "createOptions": "{\"HostConfig\":{\"PortBindings\":{\"443/tcp\":[{\"HostPort\":\"443\"}]}}}"
+                },
+                "type": "docker",
+                "version": "1.0",
+                "env": {
+                    "NGINX_DEFAULT_PORT": {
+                        "value": "443"
+                    }
+                },
+                "status": "running",
+                "restartPolicy": "always"
+            },
+            "properties.desired.systemModules.edgeHub.env.experimentalFeatures__enabled": {
+                "value": "true"
+            },
+            "properties.desired.systemModules.edgeHub.env.experimentalFeatures__nestedEdgeEnabled": {
+                "value": "true"
+            }
+        },
+        "IoTEdgeAPIProxy": {
+            "properties.desired": {}
+        }
+    }
+}

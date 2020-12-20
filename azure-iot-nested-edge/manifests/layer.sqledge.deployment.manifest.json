@@ -1,0 +1,37 @@
+{
+    "modulesContent": {
+        "$edgeAgent": {
+            "properties.desired.modules.AzureSQLEdge": {
+                "settings": {
+                    "image": "$upstream:443/azure-sql-edge/developer",
+                    "createOptions": "{\"HostConfig\":{\"CapAdd\":[\"SYS_PTRACE\"],\"Binds\":[\"sqlvolume:/sqlvolume\"],\"PortBindings\":{\"1433/tcp\":[{\"HostPort\":\"1433\"}]},\"Mounts\":[{\"Type\":\"volume\",\"Source\":\"sqlvolume\",\"Target\":\"/var/opt/mssql\"}]},\"Env\":[\"MSSQL_AGENT_ENABLED=TRUE\",\"ClientTransportType=AMQP_TCP_Only\",\"PlanId=asde-developer-on-iot-edge\"]}"
+                },
+                "type": "docker",
+                "version": "1.0",
+                "env": {
+                    "ACCEPT_EULA": {
+                        "value": "Y"
+                    },
+                    "MSSQL_SA_PASSWORD": {
+                        "value": "<Default_MSSQL_SA_Password>"
+                    },
+                    "MSSQL_LCID": {
+                        "value": "1033"
+                    },
+                    "MSSQL_COLLATION": {
+                        "value": "SQL_Latin1_General_CP1_CI_AS"
+                    }
+                },
+                "status": "running",
+                "restartPolicy": "always"
+            }
+        },
+        "$edgeHub": {
+            "properties.desired.routes.SimulatedTemperatureSensorToAzureSQLEdge": "FROM /messages/modules/SimTempSensor/* INTO BrokeredEndpoint(\"/modules/AzureSQLEdge/inputs/TempSensorStream\")",
+            "properties.desired.routes.AzureSQLEdgeToIotHub": "FROM /messages/modules/AzureSQLEdge/streamoutput INTO $upstream"
+        },
+        "AzureSQLEdge": {
+            "properties.desired": {}
+        }
+    }
+}
