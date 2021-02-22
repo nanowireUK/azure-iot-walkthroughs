@@ -1,7 +1,12 @@
 ## Demo prep
 
+* Open SSH to all three Edges
+* Open IoT Hub browser
+* Open Visual Studio Code
 * Restart the simulated temperature sensor on L4
+* Set the twin to false on L3 and restart sensor module
 * Check messages coming through
+`dotnet run --project /home/phil/Code/Microsoft/azure-iot-samples-csharp/iot-hub/Quickstarts/read-d2c-messages'
 
 ## Demo script
 
@@ -41,3 +46,11 @@
     * Unplug L4 to show store and forward
     * Explain what is happening
     * Reconnect and show both data streams resuming
+
+* MQTT Broker
+    > So that is the Nested Edge part, how about MQTT Broker?
+    * Show the extra layer manifest to get this working
+    * Start the sub client and then pub client on custom test topic
+    > Do we see that data going through to the IoT Hub?
+    * Show that it doesn't and change the pub client to new topic
+    * Show the data coming through
