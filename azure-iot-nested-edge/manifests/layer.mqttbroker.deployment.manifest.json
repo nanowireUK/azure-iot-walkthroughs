@@ -1,0 +1,36 @@
+{
+    "modulesContent": {
+        "$edgeAgent": {
+            "properties.desired.systemModules.edgeHub.env.experimentalFeatures__enabled": {
+                "value": "true"
+            },
+            "properties.desired.systemModules.edgeHub.env.experimentalFeatures__mqttBrokerEnabled": {
+                "value": "true"
+            },
+            "properties.desired.systemModules.edgeHub.settings.createOptions": "{\"HostConfig\":{\"PortBindings\":{\"5671/tcp\":[{\"HostPort\":\"5671\"}],\"8883/tcp\":[{\"HostPort\":\"8883\"}],\"1883/tcp\":[{\"HostPort\":\"1883\"}]}}}"
+        },
+        "$edgeHub": {
+            "properties.desired.schemaVersion": "1.2",
+            "properties.desired.mqttBroker.authorizations": [
+                {
+                    "identities": [
+                        "{{iot:identity}}"
+                    ],
+                    "allow": [
+                        {
+                            "operations": [
+                                "mqtt:connect",
+                                "mqtt:subscribe",
+                                "mqtt:publish"
+                            ],
+                            "resources": [
+                                "devices/{{iot:device_id}}/messages/events/",
+                                "testtopic"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

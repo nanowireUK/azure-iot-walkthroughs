@@ -1,0 +1,30 @@
+{
+    "modulesContent": {
+        "$edgeAgent": {
+            "properties.desired.systemModules.edgeHub.env.experimentalFeatures__mqttBrokerEnabled": {
+                "value": "true"
+            },
+            "properties.desired.systemModules.edgeHub.settings.createOptions": "{\"HostConfig\":{\"PortBindings\":{\"5671/tcp\":[{\"HostPort\":\"5671\"}],\"8883/tcp\":[{\"HostPort\":\"8883\"}],\"1883/tcp\":[{\"HostPort\":\"1883\"}]}}}"
+        },
+        "$edgeHub": {
+            "properties.desired.schemaVersion": "1.2",
+            "properties.desired.mqttBroker.bridges": [
+                {
+                    "endpoint": "$upstream",
+                    "settings": [
+                        {
+                            "direction": "in",
+                            "topic": "alerts/#"
+                        },
+                        {
+                            "direction": "out",
+                            "topic": "",
+                            "inPrefix": "/local/telemetry",
+                            "outPrefix": "/remote/messages"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}
