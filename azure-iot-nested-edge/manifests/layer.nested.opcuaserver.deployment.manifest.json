@@ -1,0 +1,16 @@
+{
+    "modulesContent": {
+        "$edgeAgent": {
+            "properties.desired.modules.OPCUAServer": {
+                "settings": {
+                    "image": "$upstream:443/iotedge/opc-plc:1.2.2",
+                    "createOptions": "{\"HostConfig\":{\"PortBindings\":{\"50000/tcp\":[{\"HostPort\":\"50000\"}]}},\"ExposedPorts\":{\"50000/tcp\":{}},\"Hostname\":\"OPCUAServer\",\"cmd\":[\"--pn=50000\",\"--autoaccept\",\"--sph\"]}"
+                },
+                "type": "docker",
+                "version": "1.0",
+                "status": "running",
+                "restartPolicy": "always"
+            }
+        }
+    }
+}

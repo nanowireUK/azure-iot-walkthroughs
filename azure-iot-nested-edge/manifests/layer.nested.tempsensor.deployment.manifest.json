@@ -3,7 +3,7 @@
         "$edgeAgent": {
             "properties.desired.modules.SimulatedTemperatureSensor": {
                 "settings": {
-                    "image": "mcr.microsoft.com/azureiotedge-simulated-temperature-sensor:1.0",
+                    "image": "$upstream:443/azureiotedge-simulated-temperature-sensor:1.0",
                     "createOptions": ""
                 },
                 "type": "docker",

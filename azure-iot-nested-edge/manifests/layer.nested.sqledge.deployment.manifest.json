@@ -3,7 +3,7 @@
         "$edgeAgent": {
             "properties.desired.modules.AzureSQLEdge": {
                 "settings": {
-                    "image": "mcr.microsoft.com/azure-sql-edge/developer",
+                    "image": "$upstream:443/azure-sql-edge/developer",
                     "createOptions": "{\"HostConfig\":{\"CapAdd\":[\"SYS_PTRACE\"],\"Binds\":[\"sqlvolume:/sqlvolume\"],\"PortBindings\":{\"1433/tcp\":[{\"HostPort\":\"1433\"}]},\"Mounts\":[{\"Type\":\"volume\",\"Source\":\"sqlvolume\",\"Target\":\"/var/opt/mssql\"}]},\"Env\":[\"MSSQL_AGENT_ENABLED=TRUE\",\"ClientTransportType=AMQP_TCP_Only\",\"PlanId=asde-developer-on-iot-edge\"]}"
                 },
                 "type": "docker",
