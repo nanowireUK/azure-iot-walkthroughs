@@ -9,6 +9,10 @@ This is based on the official guides here:
 
 It assumes you are already familar with the Azure IoT Edge framework and can perform basic set up and configuration.
 
+In this guide we will be building the following solution with three network layers. The setup for the network is described in the last section of this guide.
+
+![Network Topography](network-topography.png)
+
 ## IoT Hub Setup and Deployment Layers
 
 * Create an IoT Hub
@@ -44,7 +48,7 @@ az iot edge deployment create -d mqttbrokerlayered-v2 --subscription <subscripti
   * `sudo hwclock -w`
 
 * Install IoT Edge
-  * `sudo apt install curl`
+  * `sudo apt install -y curl apt-transport-https`
   * `curl https://packages.microsoft.com/config/debian/stretch/multiarch/prod.list > ./microsoft-prod.list`
   * `sudo cp ./microsoft-prod.list /etc/apt/sources.list.d/`
   * `curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
