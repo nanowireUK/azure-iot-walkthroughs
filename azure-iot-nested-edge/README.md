@@ -18,11 +18,15 @@ In this guide we will be building the following solution with three network laye
 * Create an IoT Hub
 * Create IoT Edge device entries for each gateway with your chosen authentication
 * For each child gateway make sure to add the parent gateway in the settings
+* Give each device the following tags with a value of true in their device twins
+  * L5: topnestededge, tempsensor
+  * L4: nestededge, nestedgateway, tempsensor
+  * L3: nestededge, tempsensor
 * Create the automatic and layered deployment with the following commands
 ```bash
 # Base deployments
 az iot edge deployment create -d connected-edge-baseline-v1 --subscription <subscription id> -n <iot hub name> --content ./manifests/base.topedge.deployment.manifest.json --target-condition "tags.topnestededge=true" --priority 100
-az iot edge deployment create -d nested-edge-baseline-v1 --subscription <subscription id> -n <iot hub name> --content ./manifests/base.nestededge.deployment.manifest.json --target-condition "tags.nestedEdge=true" --priority 100
+az iot edge deployment create -d nested-edge-baseline-v1 --subscription <subscription id> -n <iot hub name> --content ./manifests/base.nestededge.deployment.manifest.json --target-condition "tags.nestededge=true" --priority 100
 
 # Layer for middle edge devices that are both offline and act as gateways
 az iot edge deployment create -d nestedgatewayedgelayered --subscription <subscription id> -n <iot hub name> --content ./manifests/nestedgateway.layered.deployment.manifest.json --target-condition "tags.nestedgateway=true" --layered --priority 200
@@ -32,7 +36,7 @@ az iot edge deployment create -d tempsensorlayered --subscription <subscription 
 
 # Layer for the MQTT Broker functionality
 az iot edge deployment create -d mqttbrokerlayered-v2 --subscription <subscription id> -n <iot hub name> --content ./manifests/layer.mqttbroker.deployment.manifest.json --target-condition "tags.mqttbroker=true" --layered --priority 300
-az iot edge deployment create -d mqttbrokerlayered-v2 --subscription <subscription id> -n <iot hub name> --content ./manifests/layer.mqttbroker.deployment.manifest.json --target-condition "tags.mqttbride=true" --layered --priority 301
+az iot edge deployment create -d mqttbrokerlayered-v2 --subscription <subscription id> -n <iot hub name> --content ./manifests/layer.mqttbroker.deployment.manifest.json --target-condition "tags.mqttbridge=true" --layered --priority 301
 ```
 
 ## Common Gateway Setup (Online)
