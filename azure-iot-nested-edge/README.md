@@ -25,18 +25,19 @@ In this guide we will be building the following solution with three network laye
 * Create the automatic and layered deployment with the following commands
 ```bash
 # Base deployments
-az iot edge deployment create -d connected-edge-baseline-v1 --subscription <subscription id> -n <iot hub name> --content ./manifests/base.topedge.deployment.manifest.json --target-condition "tags.topnestededge=true" --priority 100
-az iot edge deployment create -d nested-edge-baseline-v1 --subscription <subscription id> -n <iot hub name> --content ./manifests/base.nestededge.deployment.manifest.json --target-condition "tags.nestededge=true" --priority 100
+az iot edge deployment create -d deployment-connected-edge-v1 --subscription <subscription id> -n <iot hub name> --content ./manifests/base.topedge.deployment.manifest.json --target-condition "tags.topnestededge=true" --priority 100
+az iot edge deployment create -d deployment-nested-edge-v1 --subscription <subscription id> -n <iot hub name> --content ./manifests/base.nested.deployment.manifest.json --target-condition "tags.nestededge=true" --priority 100
 
 # Layer for middle edge devices that are both offline and act as gateways
-az iot edge deployment create -d nestedgatewayedgelayered --subscription <subscription id> -n <iot hub name> --content ./manifests/nestedgateway.layered.deployment.manifest.json --target-condition "tags.nestedgateway=true" --layered --priority 200
+az iot edge deployment create -d layer-nested-gateway-v1 --subscription <subscription id> -n <iot hub name> --content ./manifests/layer.nested.gateway.deployment.manifest.json --target-condition "tags.nestededge=true and tags.nestedgateway=true" --layered --priority 200
 
 # Layer for deploying the simulated temperature sensor
-az iot edge deployment create -d tempsensorlayered --subscription <subscription id> -n <iot hub name> --content tempsensor.layered.deployment.manifest.json --target-condition "tags.tempsensor=true" --layered --priority 200
+az iot edge deployment create -d layer-nested-tempsensor-v1 --subscription <subscription id> -n <iot hub name> --content layer.nested.tempsensor.deployment.manifest.json --target-condition "tags.nestededge=true and tags.tempsensor=true" --layered --priority 310
+az iot edge deployment create -d layer-tempsensor-v1 --subscription <subscription id> -n <iot hub name> --content layer.tempsensor.deployment.manifest.json --target-condition "tags.tempsensor=true" --layered --priority 300
 
 # Layer for the MQTT Broker functionality
-az iot edge deployment create -d mqttbrokerlayered-v2 --subscription <subscription id> -n <iot hub name> --content ./manifests/layer.mqttbroker.deployment.manifest.json --target-condition "tags.mqttbroker=true" --layered --priority 300
-az iot edge deployment create -d mqttbrokerlayered-v2 --subscription <subscription id> -n <iot hub name> --content ./manifests/layer.mqttbroker.deployment.manifest.json --target-condition "tags.mqttbridge=true" --layered --priority 301
+az iot edge deployment create -d mqttbrokerlayered-v2 --subscription <subscription id> -n <iot hub name> --content ./manifests/layer.mqttbroker.deployment.manifest.json --target-condition "tags.mqttbroker=true" --layered --priority 250
+az iot edge deployment create -d mqttbrokerlayered-v2 --subscription <subscription id> -n <iot hub name> --content ./manifests/layer.mqttbridge.deployment.manifest.json --target-condition "tags.mqttbridge=true" --layered --priority 260
 ```
 
 ## Common Gateway Setup (Online)
@@ -51,22 +52,15 @@ az iot edge deployment create -d mqttbrokerlayered-v2 --subscription <subscripti
   * `sudo ntpd -q -g`
   * `sudo hwclock -w`
 
-* Install IoT Edge
+* Install IoT Edge 1.2
   * `sudo apt install -y curl apt-transport-https`
-  * `curl https://packages.microsoft.com/config/debian/stretch/multiarch/prod.list > ./microsoft-prod.list`
+  * `curl https://packages.microsoft.com/config/ubuntu/18.04/multiarch/prod.list > ./microsoft-prod.list`
   * `sudo cp ./microsoft-prod.list /etc/apt/sources.list.d/`
   * `curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
 sudo cp ./microsoft.gpg /etc/apt/trusted.gpg.d/`
-  * `sudo apt install apt-transport-https`  
   * `sudo apt update`
   * `sudo apt install moby-engine`
-  * Install the preview of IoT Edge
-    ```bash
-    curl -L https://github.com/Azure/azure-iotedge/releases/download/1.2.0-rc1/libiothsm-std_1.2.0_rc1-1-1_debian9_armhf.deb -o libiothsm-std.deb
-    curl -L https://github.com/Azure/azure-iotedge/releases/download/1.2.0-rc1/iotedge_1.2.0_rc1-1_debian9_armhf.deb -o iotedge.deb
-    sudo dpkg -i ./libiothsm-std.deb
-    sudo dpkg -i ./iotedge.deb
-    ```
+  * `sudo apt-get install aziot-edge`
 
 ## Common Gateway Setup (Offline)
 
@@ -77,6 +71,7 @@ sudo cp ./microsoft.gpg /etc/apt/trusted.gpg.d/`
     git clone https://github.com/Azure/iotedge.git
     cp <path>/iotedge/tools/CACertificates/*.cnf .
     cp <path>/iotedge/tools/CACertificates/certGen.sh .
+    ./certGen.sh create_root_and_intermediate
     ```
   
   For each device:
@@ -92,8 +87,11 @@ sudo cp ./microsoft.gpg /etc/apt/trusted.gpg.d/`
     sudo cp certs/phil-test-lab.root.ca.cert.pem /usr/local/share/ca-certificates/phil-test-lab.root.ca.cert.pem.crt
     sudo update-ca-certificates
     ```
-  * Configure IoT Edge in `sudo nano /etc/iotedge/config.yaml` with the following sections
-    ```yaml
+
+* Configure the Edge Device
+  * Create a blank `config.toml` from a template with `sudo cp /etc/aziot/config.toml.edge.template /etc/aziot/config.toml`
+  * Configure IoT Edge in `sudo nano /etc/aziot/config.toml` with the following sections
+    ```toml
     # Set the standard authentication for the device
     provisioning:
       source: "manual"
@@ -122,10 +120,10 @@ sudo cp ./microsoft.gpg /etc/apt/trusted.gpg.d/`
         auth: {}
 
     # Set the hostname
-    hostname: "10.40.0.40"
+    hostname = "l3edge"
 
     # Set the parent hostname
-    parent_hostname: "10.50.0.55"
+    local_gateway_hostname = "l4edge"
     ```
 
 ## The network environment
