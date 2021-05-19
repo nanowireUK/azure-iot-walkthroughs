@@ -63,7 +63,7 @@ This section is based on the documentation found [here](https://docs.microsoft.c
 * Use Azure Data Studio to connect to your Azure SQL Edge instance.
     * Select `New Connection`
     * Connection type: "Microsoft SQL Server"
-    * The server address is `<edgehostname or ip address>:1433`
+    * The server address is `<edgehostname or ip address>`
     * Authentication Type is `SQL Login`
     * The username is `sa` and the password `<Default_MSSQL_SA_Password>` unless this was changed in the manifest. 
 * Create a new database to host our set up
