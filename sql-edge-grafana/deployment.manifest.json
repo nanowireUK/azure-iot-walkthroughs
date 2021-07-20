@@ -37,6 +37,26 @@
                         "status": "running",
                         "restartPolicy": "always"
                     },
+                    "opcplc": {
+                        "settings": {
+                            "image": "mcr.microsoft.com/iotedge/opc-plc:1.2.4",
+                            "createOptions": "{\"HostConfig\":{\"PortBindings\":{\"50000/tcp\":[{\"HostPort\":\"50000\"}]}},\"ExposedPorts\":{\"50000/tcp\":{}},\"Hostname\":\"OPCUAServer\",\"cmd\":[\"--pn=50000\",\"--autoaccept\",\"--sph\"]}"
+                        },
+                        "type": "docker",
+                        "version": "1.0",
+                        "status": "running",
+                        "restartPolicy": "always"
+                    },
+                    "opcpublisher": {
+                        "settings": {
+                            "image": "mcr.microsoft.com/iotedge/opc-publisher:2.7.206",
+                            "createOptions": "{\"HostConfig\":{\"Binds\":[\"/iiotedge:/appdata\"]},\"Hostname\":\"opcpublisher\",\"cmd\":[\"--pf=/appdata/pn.json\",\"--aa\"]}"
+                        },
+                        "type": "docker",
+                        "version": "1.0",
+                        "status": "running",
+                        "restartPolicy": "always"
+                    },
                     "Grafana": {
                         "settings": {
                             "image": "grafana/grafana",
@@ -58,14 +78,14 @@
                 "systemModules": {
                     "edgeAgent": {
                         "settings": {
-                            "image": "mcr.microsoft.com/azureiotedge-agent:1.0",
+                            "image": "mcr.microsoft.com/azureiotedge-agent:1.2",
                             "createOptions": ""
                         },
                         "type": "docker"
                     },
                     "edgeHub": {
                         "settings": {
-                            "image": "mcr.microsoft.com/azureiotedge-hub:1.0",
+                            "image": "mcr.microsoft.com/azureiotedge-hub:1.2",
                             "createOptions": "{\"HostConfig\":{\"PortBindings\":{\"443/tcp\":[{\"HostPort\":\"443\"}],\"5671/tcp\":[{\"HostPort\":\"5671\"}],\"8883/tcp\":[{\"HostPort\":\"8883\"}]}}}"
                         },
                         "type": "docker",
@@ -79,7 +99,8 @@
             "properties.desired": {
                 "routes": {
                     "SimulatedTemperatureSensorToAzureSQLEdge": "FROM /messages/modules/SimTempSensor/* INTO BrokeredEndpoint(\"/modules/AzureSQLEdge/inputs/TempSensorStream\")",
-                    "AzureSQLEdgeToIotHub": "FROM /messages/modules/AzureSQLEdge/streamoutput INTO $upstream"
+                    "AzureSQLEdgeToIotHub": "FROM /messages/modules/AzureSQLEdge/streamoutput INTO $upstream",
+                    "iiot": "FROM /messages/modules/opcpublisher/* INTO $upstream"
                 },
                 "schemaVersion": "1.0",
                 "storeAndForwardConfiguration": {
@@ -97,6 +118,12 @@
             }
         },
         "Grafana": {
+            "properties.desired": {}
+        },
+        "opcplc": {
+            "properties.desired": {}
+        },
+        "opcpublisher": {
             "properties.desired": {}
         }
     }
